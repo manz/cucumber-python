@@ -17,9 +17,10 @@
 
     <!-- please see http://confluence.jetbrains.net/display/IDEADEV/Build+Number+Ranges for description -->
     <idea-version since-build="123"/>
-
+    <depends>com.intellij</depends>
     <depends>cucumber</depends>
     <depends>Pythonid</depends>
+    <!--depends>com.</depends-->
     <!-- try to support PyCharm -->
     <!--depends optional="true">com.intellij.modules.python</depends-->
 
@@ -34,7 +35,8 @@
 
     <extensions defaultExtensionNs="com.intellij">
         <errorHandler implementation="com.intellij.diagnostic.ITNReporter"/>
-        <configurationProducer implementation="com.wgs.cucumber.python.run.CucumberPythonRunConfigurationProducer"/>
+        <configurationType implementation="com.jetbrains.django.testRunner.DjangoTestsConfigurationType" />
+        <configurationProducer implementation="com.wgs.cucumber.python.run.CucumberDjangoTestsConfigurationProducer" />
     </extensions>
 
     <extensions defaultExtensionNs="org.jetbrains.plugins.cucumber.steps">
