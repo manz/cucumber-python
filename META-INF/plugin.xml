@@ -1,0 +1,43 @@
+<idea-plugin version="2">
+    <id>com.wgs.cucumber.python.CucumberPythonBundle</id>
+    <name>Cucumber for Python</name>
+    <version>1.0</version>
+    <vendor email="eperalta@webgeoservices.com" url="http://www.webgeoservices.com">YourCompany</vendor>
+
+    <description><![CDATA[
+      Enter short description for your plugin here.<br>
+      <small>most HTML tags may be used</small>
+      ]]></description>
+
+    <change-notes><![CDATA[
+      Add change notes here.<br>
+      <small>most HTML tags may be used</small>
+      ]]>
+    </change-notes>
+
+    <!-- please see http://confluence.jetbrains.net/display/IDEADEV/Build+Number+Ranges for description -->
+    <idea-version since-build="123"/>
+
+    <depends>cucumber</depends>
+    <depends>Pythonid</depends>
+    <!-- try to support PyCharm -->
+    <!--depends optional="true">com.intellij.modules.python</depends-->
+
+    <application-components>
+    </application-components>
+
+    <project-components>
+    </project-components>
+
+    <actions>
+    </actions>
+
+    <extensions defaultExtensionNs="com.intellij">
+        <errorHandler implementation="com.intellij.diagnostic.ITNReporter"/>
+        <configurationProducer implementation="com.wgs.cucumber.python.run.CucumberPythonRunConfigurationProducer"/>
+    </extensions>
+
+    <extensions defaultExtensionNs="org.jetbrains.plugins.cucumber.steps">
+        <cucumberJvmExtensionPoint implementation="com.wgs.cucumber.python.CucumberPythonExtension"/>
+    </extensions>
+</idea-plugin>
