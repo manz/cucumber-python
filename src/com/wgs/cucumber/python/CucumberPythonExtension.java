@@ -31,6 +31,7 @@ import com.intellij.util.PathUtil;
 import com.intellij.util.containers.ContainerUtil;
 import com.jetbrains.python.PythonFileType;
 import com.jetbrains.python.module.PythonModuleType;
+import com.jetbrains.python.psi.PyDecoratorList;
 import com.jetbrains.python.psi.PyFile;
 import com.jetbrains.python.psi.PyFunction;
 import com.jetbrains.python.psi.PyStatement;
@@ -74,11 +75,14 @@ public class CucumberPythonExtension implements CucumberJvmExtensionPoint {
             for (PyStatement statement : statements) {
                 if (statement instanceof PyFunction) {
                     PyFunction func = (PyFunction) statement;
+                    PyDecoratorList decorators = func.getDecoratorList();
 
-                    try {
-                        newDefs.add(new LettuceStepDefinition(func));
-                    } catch (NullPointerException e) {
-                        // silence !
+                    if (decorators != null) {
+                        LettuceStepDefinition stepWannabe = new LettuceStepDefinition(func);
+
+                        if (stepWannabe.getElementText() != null) {
+                            newDefs.add(stepWannabe);
+                        }
                     }
                 }
             }
