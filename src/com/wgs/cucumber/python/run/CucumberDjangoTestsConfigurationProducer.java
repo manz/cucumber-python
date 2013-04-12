@@ -19,13 +19,7 @@ import org.jetbrains.plugins.cucumber.psi.GherkinFile;
 import org.jetbrains.plugins.cucumber.psi.GherkinPsiElement;
 import org.jetbrains.plugins.cucumber.psi.GherkinScenario;
 
-/**
- * Created with IntelliJ IDEA.
- * User: emmanuel
- * Date: 10/04/13
- * Time: 18:04
- * To change this template use File | Settings | File Templates.
- */
+
 public class CucumberDjangoTestsConfigurationProducer extends DjangoTestsConfigurationProducer {
 
     private GherkinPsiElement myGherkinSourceElement;
@@ -72,10 +66,10 @@ public class CucumberDjangoTestsConfigurationProducer extends DjangoTestsConfigu
     }
 
     private RunnerAndConfigurationSettings createConfigurationByGherkinElement(GherkinPsiElement element, ConfigurationContext context) {
-        String appName = "wgsportal";
+        // not very usefull for our use cases
+        String appName = "";
 
         Module module = ModuleUtil.findModuleForPsiElement(element);
-        //GherkinScenario scenario = getScenarioFromElement(element);
 
         PsiFile featureFileElement = PsiTreeUtil.getParentOfType(element, PsiFile.class);
         RunnerAndConfigurationSettings result = null;
@@ -84,7 +78,6 @@ public class CucumberDjangoTestsConfigurationProducer extends DjangoTestsConfigu
             result = cloneTemplateConfiguration(context.getProject(), context);
 
             String target = computeTargetForGherkinElement(featureFileElement, element);
-
 
             DjangoTestsRunConfiguration configuration = (DjangoTestsRunConfiguration) result.getConfiguration();
 
@@ -99,11 +92,22 @@ public class CucumberDjangoTestsConfigurationProducer extends DjangoTestsConfigu
 
     private String computeTargetForGherkinElement(PsiFile featureFile, GherkinPsiElement gherkinPsiElement) {
         StringBuilder builder = new StringBuilder();
+        GherkinScenario scenario = null;
 
+        //TODO: fixme Magic String
         builder.append("bdd.").append(computeFeatureClassName(featureFile.getName()));
+        GherkinScenario parentScenario = PsiTreeUtil.getParentOfType(gherkinPsiElement, GherkinScenario.class);
 
-        if (gherkinPsiElement instanceof GherkinScenario) {
-            builder.append(".test_scenario_").append(getScenarioIndex((GherkinScenario) gherkinPsiElement));
+        if (parentScenario != null) {
+            scenario = parentScenario;
+        }
+        else if (gherkinPsiElement instanceof GherkinScenario) {
+            scenario = (GherkinScenario)gherkinPsiElement;
+        }
+
+        //TODO: fixme Magic String
+        if (scenario != null) {
+            builder.append(".test_scenario_").append(getScenarioIndex(scenario));
         }
 
         return builder.toString();
