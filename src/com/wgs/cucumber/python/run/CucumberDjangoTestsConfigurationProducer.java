@@ -24,6 +24,9 @@ public class CucumberDjangoTestsConfigurationProducer extends DjangoTestsConfigu
 
     private GherkinPsiElement myGherkinSourceElement;
 
+    private final static String DJANGO_LETTUCE_RUN_CONFIG_PREFIX = "Cucumber: ";
+    private final static String DJANGO_LETTUCE_TEST_METHOD_PREFIX = "test_scenario_";
+    private final static String DJANGO_BDD_APP = "bdd";
     @Override
     public PsiElement getSourceElement() {
         return myGherkinSourceElement;
@@ -31,7 +34,6 @@ public class CucumberDjangoTestsConfigurationProducer extends DjangoTestsConfigu
 
     @Override
     protected RunnerAndConfigurationSettings createConfigurationByElement(Location location, ConfigurationContext context) {
-
         PsiElement element = location.getPsiElement();
         GherkinPsiElement gherkinPsiElement;
         if (element instanceof GherkinFile) {
@@ -67,7 +69,7 @@ public class CucumberDjangoTestsConfigurationProducer extends DjangoTestsConfigu
 
     private RunnerAndConfigurationSettings createConfigurationByGherkinElement(GherkinPsiElement element, ConfigurationContext context) {
         // not very usefull for our use cases
-        String appName = "";
+        String appName = "bdd";
 
         Module module = ModuleUtil.findModuleForPsiElement(element);
 
@@ -81,7 +83,7 @@ public class CucumberDjangoTestsConfigurationProducer extends DjangoTestsConfigu
 
             DjangoTestsRunConfiguration configuration = (DjangoTestsRunConfiguration) result.getConfiguration();
 
-            configuration.setName((new StringBuilder()).append("Cucumber: ").append(target).toString());
+            configuration.setName((new StringBuilder()).append(DJANGO_LETTUCE_RUN_CONFIG_PREFIX).append(target).toString());
             configuration.setUseModuleSdk(true);
             configuration.setModule(module);
             configuration.setTarget(target);
@@ -94,8 +96,7 @@ public class CucumberDjangoTestsConfigurationProducer extends DjangoTestsConfigu
         StringBuilder builder = new StringBuilder();
         GherkinScenario scenario = null;
 
-        //TODO: fixme Magic String
-        builder.append("bdd.").append(computeFeatureClassName(featureFile.getName()));
+        builder.append(".").append(DJANGO_BDD_APP).append(computeFeatureClassName(featureFile.getName()));
         GherkinScenario parentScenario = PsiTreeUtil.getParentOfType(gherkinPsiElement, GherkinScenario.class);
 
         if (parentScenario != null) {
@@ -105,9 +106,8 @@ public class CucumberDjangoTestsConfigurationProducer extends DjangoTestsConfigu
             scenario = (GherkinScenario)gherkinPsiElement;
         }
 
-        //TODO: fixme Magic String
         if (scenario != null) {
-            builder.append(".test_scenario_").append(getScenarioIndex(scenario));
+            builder.append(".").append(DJANGO_LETTUCE_TEST_METHOD_PREFIX).append(getScenarioIndex(scenario));
         }
 
         return builder.toString();
