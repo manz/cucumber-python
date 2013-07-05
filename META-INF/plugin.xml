@@ -2,16 +2,14 @@
     <id>com.wgs.cucumber.python.CucumberPythonBundle</id>
     <name>Cucumber for Python</name>
     <version>1.1</version>
-    <vendor email="eperalta@webgeoservices.com" url="http://www.webgeoservices.com">YourCompany</vendor>
+    <vendor email="eperalta@webgeoservices.com" url="http://www.webgeoservices.com">Web Geo Services</vendor>
 
     <description><![CDATA[
-      Enter short description for your plugin here.<br>
-      <small>most HTML tags may be used</small>
+      Lettuce Support for idea ultimate
       ]]></description>
 
     <change-notes><![CDATA[
-      Add change notes here.<br>
-      <small>most HTML tags may be used</small>
+      
       ]]>
     </change-notes>
 
