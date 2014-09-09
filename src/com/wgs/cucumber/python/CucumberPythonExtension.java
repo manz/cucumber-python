@@ -57,36 +57,6 @@ public class CucumberPythonExtension implements CucumberJvmExtensionPoint {
         return isStepLikeFile(child, parent);
     }
 
-/*
-    @NotNull
-    @Override
-    public List<AbstractStepDefinition> getStepDefinitions(@NotNull PsiFile psiFile) {
-        final List<AbstractStepDefinition> newDefs = new ArrayList<AbstractStepDefinition>();
-
-        if (psiFile instanceof PyFile) {
-            PyFile pyFile = (PyFile) psiFile;
-
-            List<PyStatement> statements = pyFile.getStatements();
-
-            for (PyStatement statement : statements) {
-                if (statement instanceof PyFunction) {
-                    PyFunction func = (PyFunction) statement;
-                    PyDecoratorList decorators = func.getDecoratorList();
-
-                    if (decorators != null) {
-                        LettuceStepDefinition stepWannabe = new LettuceStepDefinition(func);
-
-                        if (stepWannabe.getElementText() != null) {
-                            newDefs.add(stepWannabe);
-                        }
-                    }
-                }
-            }
-        }
-        return newDefs;
-    }
-*/
-
     @NotNull
     @Override
     public FileType getStepFileType() {
@@ -98,24 +68,6 @@ public class CucumberPythonExtension implements CucumberJvmExtensionPoint {
     public StepDefinitionCreator getStepDefinitionCreator() {
         return new PyStepDefinitionCreator();
     }
-
-
-/*
-    @Override
-    public void collectAllStepDefsProviders(@NotNull List<VirtualFile> providers, @NotNull Project project) {
-        final Module[] modules = ModuleManager.getInstance(project).getModules();
-        for (Module module : modules) {
-            if (PythonModuleType.get(module) instanceof PythonModuleType) {
-                final VirtualFile[] roots = ModuleRootManager.getInstance(module).getContentRoots();
-                ContainerUtil.addAll(providers, roots);
-            }
-        }
-    }
-
-    @Override
-    public void loadStepDefinitionRootsFromLibraries(@NotNull Module module, List<PsiDirectory> psiDirectories, @NotNull Set<String> strings) {
-    }
-*/
 
     @Override
     public List<PsiElement> resolveStep(@NotNull PsiElement psiElement) {

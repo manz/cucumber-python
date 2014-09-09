@@ -28,12 +28,10 @@ import java.util.List;
  * @author Emmanuel Peralta
  */
 public class LettuceStepDefinition extends AbstractStepDefinition {
-    private String myText;
     private List<String> myParameters;
 
     public LettuceStepDefinition(PyFunction function) {
         super(function);
-        myText = extractRegexpFrom(function);
         myParameters = extractParametersNameFrom(function);
     }
 
@@ -75,7 +73,6 @@ public class LettuceStepDefinition extends AbstractStepDefinition {
         return regexp;
     }
 
-    /** New methods **/
     @Nullable
     @Override
     protected String getCucumberRegexFromElement(PsiElement psiElement) {
