@@ -215,7 +215,7 @@ public class CucumberPythonExtension implements CucumberJvmExtensionPoint {
                     PsiFile[] stepFiles = directory.getFiles();
                     for (PsiFile stepFile : stepFiles) {
                         if (stepFile instanceof PyFile) {
-                            PyFile pyFile = (PyFile) stepFile;
+                            PyFile pyFile = (PyFile)stepFile;
 
                             List<PyStatement> statements = pyFile.getStatements();
 

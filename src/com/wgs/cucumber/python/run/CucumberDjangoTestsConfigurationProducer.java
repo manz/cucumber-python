@@ -3,13 +3,13 @@ package com.wgs.cucumber.python.run;
 import com.intellij.execution.Location;
 import com.intellij.execution.RunnerAndConfigurationSettings;
 import com.intellij.execution.actions.ConfigurationContext;
+import com.intellij.execution.junit.RuntimeConfigurationProducer;
 import com.intellij.openapi.module.Module;
 import com.intellij.openapi.module.ModuleUtil;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
 import com.intellij.psi.util.PsiTreeUtil;
-import com.jetbrains.django.testRunner.DjangoTestsConfigurationProducer;
 import com.jetbrains.django.testRunner.DjangoTestsRunConfiguration;
 import com.jetbrains.python.buildout.BuildoutFacet;
 import com.jetbrains.python.buildout.config.psi.BuildoutPsiUtil;
@@ -20,13 +20,18 @@ import org.jetbrains.plugins.cucumber.psi.GherkinPsiElement;
 import org.jetbrains.plugins.cucumber.psi.GherkinScenario;
 
 
-public class CucumberDjangoTestsConfigurationProducer extends DjangoTestsConfigurationProducer {
+public class CucumberDjangoTestsConfigurationProducer extends RuntimeConfigurationProducer {
 
     private GherkinPsiElement myGherkinSourceElement;
 
     private final static String DJANGO_LETTUCE_RUN_CONFIG_PREFIX = "Cucumber: ";
     private final static String DJANGO_LETTUCE_TEST_METHOD_PREFIX = "test_scenario_";
-    private final static String DJANGO_BDD_APP = "bdd";
+    private final static String DJANGO_BDD_APP = "wgs.apps.bdd.tests.test_suites";
+
+    public CucumberDjangoTestsConfigurationProducer() {
+        super(CucumberDjangoTestsConfigurationType.getInstance());
+    }
+
     @Override
     public PsiElement getSourceElement() {
         return myGherkinSourceElement;
@@ -69,7 +74,7 @@ public class CucumberDjangoTestsConfigurationProducer extends DjangoTestsConfigu
 
     private RunnerAndConfigurationSettings createConfigurationByGherkinElement(GherkinPsiElement element, ConfigurationContext context) {
         // not very usefull for our use cases
-        String appName = "bdd";
+        String appName = "wgs.apps.bdd";
 
         Module module = ModuleUtil.findModuleForPsiElement(element);
 
@@ -96,7 +101,7 @@ public class CucumberDjangoTestsConfigurationProducer extends DjangoTestsConfigu
         StringBuilder builder = new StringBuilder();
         GherkinScenario scenario = null;
 
-        builder.append(".").append(DJANGO_BDD_APP).append(computeFeatureClassName(featureFile.getName()));
+        builder.append(DJANGO_BDD_APP).append(".").append(computeFeatureClassName(featureFile.getName()));
         GherkinScenario parentScenario = PsiTreeUtil.getParentOfType(gherkinPsiElement, GherkinScenario.class);
 
         if (parentScenario != null) {
@@ -132,6 +137,8 @@ public class CucumberDjangoTestsConfigurationProducer extends DjangoTestsConfigu
         }
     }
 
-
-
+    @Override
+    public int compareTo(Object o) {
+        return -1;
+    }
 }
