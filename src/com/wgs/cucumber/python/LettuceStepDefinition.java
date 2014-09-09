@@ -15,8 +15,10 @@
  */
 package com.wgs.cucumber.python;
 
+import com.intellij.psi.PsiElement;
 import com.jetbrains.python.psi.*;
 
+import org.jetbrains.annotations.Nullable;
 import org.jetbrains.plugins.cucumber.steps.AbstractStepDefinition;
 
 import java.util.ArrayList;
@@ -38,11 +40,6 @@ public class LettuceStepDefinition extends AbstractStepDefinition {
     @Override
     public List<String> getVariableNames() {
         return myParameters;
-    }
-
-    @Override
-    public String getElementText() {
-        return myText;
     }
 
     private List<String> extractParametersNameFrom(PyFunction function) {
@@ -76,5 +73,15 @@ public class LettuceStepDefinition extends AbstractStepDefinition {
         }
 
         return regexp;
+    }
+
+    /** New methods **/
+    @Nullable
+    @Override
+    protected String getCucumberRegexFromElement(PsiElement psiElement) {
+        if (psiElement instanceof PyFunction) {
+            return extractRegexpFrom((PyFunction)psiElement);
+        }
+        return "";
     }
 }

@@ -53,4 +53,10 @@ public class PyStepDefinitionCreator implements StepDefinitionCreator {
     public String getStepDefinitionFilePath(@NotNull PsiFile psiFile) {
         return null;  //To change body of implemented methods use File | Settings | File Templates.
     }
+
+    @NotNull
+    @Override
+    public String getDefaultStepFileName() {
+        return null;
+    }
 }

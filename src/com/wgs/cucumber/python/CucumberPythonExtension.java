@@ -17,20 +17,15 @@ package com.wgs.cucumber.python;
 
 import com.intellij.openapi.fileTypes.FileType;
 import com.intellij.openapi.module.Module;
-import com.intellij.openapi.module.ModuleManager;
 import com.intellij.openapi.project.Project;
-import com.intellij.openapi.roots.ModuleRootManager;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.psi.PsiDirectory;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
 import com.intellij.psi.PsiReference;
-import com.intellij.psi.impl.file.PsiDirectoryFactory;
-import com.intellij.psi.util.PsiTreeUtil;
 import com.intellij.util.PathUtil;
 import com.intellij.util.containers.ContainerUtil;
 import com.jetbrains.python.PythonFileType;
-import com.jetbrains.python.module.PythonModuleType;
 import com.jetbrains.python.psi.PyDecoratorList;
 import com.jetbrains.python.psi.PyFile;
 import com.jetbrains.python.psi.PyFunction;
@@ -62,6 +57,7 @@ public class CucumberPythonExtension implements CucumberJvmExtensionPoint {
         return isStepLikeFile(child, parent);
     }
 
+/*
     @NotNull
     @Override
     public List<AbstractStepDefinition> getStepDefinitions(@NotNull PsiFile psiFile) {
@@ -89,6 +85,7 @@ public class CucumberPythonExtension implements CucumberJvmExtensionPoint {
         }
         return newDefs;
     }
+*/
 
     @NotNull
     @Override
@@ -102,12 +99,8 @@ public class CucumberPythonExtension implements CucumberJvmExtensionPoint {
         return new PyStepDefinitionCreator();
     }
 
-    @NotNull
-    @Override
-    public String getDefaultStepFileName() {
-        return "StepDef";
-    }
 
+/*
     @Override
     public void collectAllStepDefsProviders(@NotNull List<VirtualFile> providers, @NotNull Project project) {
         final Module[] modules = ModuleManager.getInstance(project).getModules();
@@ -122,6 +115,7 @@ public class CucumberPythonExtension implements CucumberJvmExtensionPoint {
     @Override
     public void loadStepDefinitionRootsFromLibraries(@NotNull Module module, List<PsiDirectory> psiDirectories, @NotNull Set<String> strings) {
     }
+*/
 
     @Override
     public List<PsiElement> resolveStep(@NotNull PsiElement psiElement) {
@@ -145,7 +139,9 @@ public class CucumberPythonExtension implements CucumberJvmExtensionPoint {
         return Collections.emptyList();
     }
 
-    @Override
+
+
+ /*   @Override
     public void findRelatedStepDefsRoots(Module module, PsiFile featureFile, List<PsiDirectory> newStepDefinitionsRoots, Set<String> processedStepDirectories) {
         PsiDirectory parent = PsiTreeUtil.getParentOfType(featureFile, PsiDirectory.class);
 
@@ -166,7 +162,7 @@ public class CucumberPythonExtension implements CucumberJvmExtensionPoint {
                 newStepDefinitionsRoots.add(sourceRoot);
             }
         }
-    }
+    }*/
 
     @Nullable
     public String getGlue(@NotNull GherkinStep step) {
@@ -189,7 +185,7 @@ public class CucumberPythonExtension implements CucumberJvmExtensionPoint {
 
     @NotNull
     @Override
-    public Collection<String> getGlues(@NotNull GherkinFile gherkinFile) {
+    public Collection<String> getGlues(@NotNull GherkinFile gherkinFile, Set<String> strings) {
         final Set<String> glues = ContainerUtil.newHashSet();
 
         gherkinFile.accept(new GherkinRecursiveElementVisitor() {
@@ -203,5 +199,66 @@ public class CucumberPythonExtension implements CucumberJvmExtensionPoint {
         });
         return glues;
 
+    }
+
+
+    /** New methods **/
+    @Override
+    public List<AbstractStepDefinition> loadStepsFor(@Nullable PsiFile psiFile, @NotNull Module module) {
+        List<AbstractStepDefinition> newDefs = new ArrayList<AbstractStepDefinition>();
+
+        if (psiFile != null) {
+            PsiDirectory[] directories = psiFile.getContainingDirectory().getSubdirectories();
+
+            for (PsiDirectory directory : directories) {
+                if (directory.getName().equals("steps")) {
+                    PsiFile[] stepFiles = directory.getFiles();
+                    for (PsiFile stepFile : stepFiles) {
+                        if (stepFile instanceof PyFile) {
+                            PyFile pyFile = (PyFile) stepFile;
+
+                            List<PyStatement> statements = pyFile.getStatements();
+
+                            for (PyStatement statement : statements) {
+                                if (statement instanceof PyFunction) {
+                                    PyFunction func = (PyFunction) statement;
+                                    PyDecoratorList decorators = func.getDecoratorList();
+
+                                    if (decorators != null) {
+                                        LettuceStepDefinition stepWannabe = new LettuceStepDefinition(func);
+
+                                        if (stepWannabe.getCucumberRegex() != null) {
+                                            newDefs.add(stepWannabe);
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+
+        }
+        return newDefs;
+    }
+
+    @Override
+    public void flush(@NotNull Project project) {
+
+    }
+
+    @Override
+    public void reset(@NotNull Project project) {
+
+    }
+
+    @Override
+    public Object getDataObject(@NotNull Project project) {
+        return null;
+    }
+
+    @Override
+    public Collection<? extends PsiFile> getStepDefinitionContainers(@NotNull GherkinFile gherkinFile) {
+        return null;
     }
 }
