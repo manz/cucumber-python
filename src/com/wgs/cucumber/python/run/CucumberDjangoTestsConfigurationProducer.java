@@ -24,7 +24,7 @@ public class CucumberDjangoTestsConfigurationProducer extends RuntimeConfigurati
 
     private GherkinPsiElement myGherkinSourceElement;
 
-    private final static String DJANGO_LETTUCE_RUN_CONFIG_PREFIX = "Cucumber: ";
+    private final static String DJANGO_LETTUCE_RUN_CONFIG_PREFIX = "Bdd: ";
     private final static String DJANGO_LETTUCE_TEST_METHOD_PREFIX = "test_scenario_";
     private final static String DJANGO_BDD_APP = "wgs.apps.bdd.tests.test_suites";
 
